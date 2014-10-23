@@ -141,7 +141,10 @@ TMVC.combinAjaxData = function(taskArray, callback, id) {
 					if(index == taskArray.length) {
 						callback(data);
 					}		
-				});
+				}).fail(function(jqXHR, textStatus, errorThrown){
+					console.error(taskItem['url'] + " " + textStatus + ", please check the url path ");
+				})
+
 			});
 		});
 	});
