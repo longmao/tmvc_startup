@@ -9,7 +9,7 @@ KISSY.add(function(S) {
 		},
 		getFooterIntroduceData: function(callback) {
 			var data = {
-				introduce: "欢迎使用artTemplate模板引擎，体验终极快感！"
+				introduce: "TMVC--Demo"
 			};
 			callback(data);
 		}
