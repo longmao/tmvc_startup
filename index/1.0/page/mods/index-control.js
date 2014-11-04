@@ -16,6 +16,8 @@ KISSY.add(function(S, GarbageCollector, Css, D, Model, View, IO) {
                     console.log("test view rendered!");
                 })
             }); //获取介绍数据并且渲染
+
+
             TMVC.combinAjaxData([{
                 taskName: "task1",
                 url: "mockData/index/getUsername.js"

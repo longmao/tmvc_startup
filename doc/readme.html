@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>TMVC Readme</title>
+</head>
+<link rel="stylesheet" type="text/css" href="css/default.css">
+<style type="text/css">
+body {
+    max-width: 800px;
+    padding: 20px 40px;
+    margin: 0 auto;
+}
+@media (min-width: 0px) {
+    #wmd-input {
+        font-size: 16px;
+    }
+    p,
+    li {
+        font-size: 16px;
+    }
+}
+@media (min-width: 600px) {
+    #wmd-input {
+        font-size: 17px;
+    }
+    p,
+    li {
+        font-size: 17px;
+    }
+}
+@media (min-width: 1200px) {
+    #wmd-input {
+        font-size: 18px;
+    }
+    p,
+    li {
+        font-size: 18px;
+    }
+}
+</style>
+
+<body>
+    <h1 id="tmvc20">TMVC2.0</h1>
+
+    <p>TMVC是一个基于kissy的MVC框架，封装了针对web page开发的normal case以及spa两种开发模式。</p>
+
+    <p>目前版本是2.0。</p>
+
+    <h2 id="why-tmvc为何使用tmvc">Why TMVC为何使用TMVC</h2>
+
+    <ol>
+        <li>
+            <p>基于成熟框架kissy，可采用kissy丰富又强大的模块，开发效率高</p>
+        </li>
+        <li>
+            <p>基于自动化开发部署工具TMVCPIE，可自动生成开发starter目录，以及自动打包及部署功能，开发新页面或者模块非常方便快捷</p>
+        </li>
+        <li>
+            <p>框架支持模块扩展，可根据项目需求进行自主开发模块，增强项目开发的灵活性。</p>
+        </li>
+    </ol>
+
+    <h2 id="installment安装">Installment安装</h2>
+
+    <ol>
+        <li>
+            <p>首先需要安装node</p>
+        </li>
+        <li>
+            <p>安装tmvc-pie</p>
+        </li>
+    </ol>
+
+    <pre class="prettyprint"><code class="language-sh hljs bash"><span class="hljs-built_in">sudo</span> npm install tmvcpie -g</code></pre>
+
+    <h2 id="usage使用">Usage使用</h2>
+
+    <ol>
+        <li>
+            <p>获取配置文件</p>
+
+            <pre class="prettyprint"><code class="language-sh hljs sql">    tmvc  <span class="hljs-operator"><span class="hljs-keyword">start</span></span></code></pre>
+
+            <ul>
+                <li>
+                    <p>配置文件tmvc-conf.json如下</p>
+
+                    <ul>
+                        <li>appTypeke可为spa、normal，分别代表单页面应用以及常规应用。
+                            <br>
+                            <pre class="prettyprint"><code class="language-javascript hljs ">    {
+    <span class="hljs-string">"appType"</span>:<span class="hljs-string">"spa"</span>,
+    <span class="hljs-string">"pageType"</span>:<span class="hljs-string">"html"</span>,
+    <span class="hljs-string">"deploy"</span>: {
+        <span class="hljs-string">"A"</span>:
+        {
+            <span class="hljs-string">"host"</span>:<span class="hljs-string">"172.30.10.219"</span>,
+            <span class="hljs-string">"port"</span>:<span class="hljs-string">"8888"</span>,
+            <span class="hljs-string">"path"</span>:<span class="hljs-string">"/upload.php"</span>,
+            <span class="hljs-string">"username"</span>: <span class="hljs-string">"xxxx"</span>,
+            <span class="hljs-string">"password"</span>: <span class="hljs-string">"******"</span>,
+            <span class="hljs-string">"serverAppPath"</span>: <span class="hljs-string">"/dianyi/app/aef"</span>
+        }
+    },
+    <span class="hljs-string">"publish"</span>: {
+        <span class="hljs-string">"backHost"</span>: <span class="hljs-string">"http://ips.ymtech.info"</span>,
+        <span class="hljs-string">"frontHost"</span>: <span class="hljs-string">"http://feips.ymtech.info/"</span>    
+    }
+}</code></pre>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </li>
+        <li>
+            <p>根据配置文件，创建tmvc初始化项目</p>
+
+            <pre class="prettyprint"><code class="language-sh hljs lasso">tmvc  <span class="hljs-attribute">-i</span> tmvc2<span class="hljs-number">.0</span></code></pre>
+        </li>
+        <li>
+            <p>新添加新页面，如新添加home页面.</p>
+
+            <pre class="prettyprint"><code class="language-sh hljs lasso">tmvc <span class="hljs-attribute">-c</span> home</code></pre>
+        </li>
+        <li>
+            <p>根据 项目名称根路径/页面名称 进行前端打包</p>
+
+            <pre class="prettyprint"><code class="language-sh hljs axapta">tmvc -b tmvc/<span class="hljs-keyword">index</span></code></pre>
+        </li>
+        <li>
+            <p>启动调试服务器。打开<a href="http://localhost:8000?debug">http://localhost:8000?debug</a> 测试调试开发(debug代表当前是调试状态，所有js css文件采用非压缩版本。)</p>
+
+            <pre class="prettyprint"><code class="language-sh hljs vhdl">tmvc <span class="hljs-keyword">release</span> -p <span class="hljs-number">8000</span></code></pre>
+        </li>
+    </ol>
+
+    <h2 id="module模块">Module模块</h2>
+
+
+
+    <h3 id="garbagecollector">garbageCollector</h3>
+
+    <p>垃圾收集器，完成对之前页面存在的timer 和 通过kissy.event.on以及kissy.event.delegate 绑定的dom 事件。</p>
+
+
+
+    <pre class="prettyprint"><code class="language-javascript hljs ">    <span class="hljs-keyword">var</span> garbageCollector = {    
+        startCollect: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+            clearTimer();
+            clearNode();
+            clearObject();
+            clearCss(D);
+        },  
+        init: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+            window.Evt = {};
+            window.Evt.on = S.Event.on;
+            window.Evt.delegate = S.Event.delegate;
+            S.Event.delegate = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(contextSelector, eventType, selector, func)</span> {</span>
+                <span class="hljs-keyword">var</span> elemenet = storeElementArray(selector);
+                Evt.delegate(contextSelector, eventType, elemenet, func);
+            }
+            S.Event.on = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(selector, eventType, func)</span> {</span>
+                <span class="hljs-keyword">var</span> elemenet = storeElementArray(selector); 
+                Evt.on(elemenet, eventType, func);
+            }       
+        }
+
+    }</code></pre>
+
+    <h3 id="readtmpltool">readTmplTool</h3>
+
+    <p>实现对模板文件的读取以及读取模板中包含include子模板</p>
+
+
+
+    <h3 id="renderenginein">renderEnginein</h3>
+
+    <ol>
+        <li>
+            <p>实现对模板中包含对class命名为sciprt-tmp的元素解析：将script-tmpl中包含的include进行替换</p>
+        </li>
+        <li>
+            <p>增加ajax请求某一id元素时添加遮罩。</p>
+        </li>
+        <li>
+            <p>通过renderHtml进行渲染html操作：</p>
+
+            <ul>
+                <li>首先判断html片段是否在更新，如果正在更新，则返回。</li>
+                <li>通过artTempalte提供template(id,data)方法获得html字符串。</li>
+                <li>通过D.query(selector, htmlElem)查找类名include-tmpl的元素。如果存在这样的元素。则读取元素的data属性，获取到要请求的include文件路径。执行include子模板请求，并将返回结果替换掉原模板中include片段。</li>
+                <li>如果指定id是scirpt标签，则运用D.replaceWith用新生成的htmlElm替换掉原有scriptElm，如果不是，则运用D.html更新原有elem。</li>
+                <li>判断当前id渲染是否是第一次，如果是，则执行渲染完成后的callback，并按照{id:callback}存储在TMVC.pageEvent[TMVC.getPageName()]对象中。</li>
+            </ul>
+        </li>
+        <li>
+            <p>通过init完成初始化工作：</p>
+
+            <ul>
+                <li>根据配置文件中指定的isUseMiniTmpl，决定是否获取模板的压缩文件。</li>
+                <li>同步读取模板文件，将获取到的模板文件存在this.contentHtml</li>
+                <li>查找模板中是否存在类名为script-tmpl的元素。如果存在，则将script-tmpl元素存在this.tmplScriptEle数组中。</li>
+                <li>对this.tmplScriptEle通过replaceAll进行替换处理。将&lt;#include(‘temp.tmpl’)#&gt;片段。替换成
+                    <code>&lt;div class="include-tmpl" data="temp.tmpl"&gt;</code>
+                </li>
+            </ul>
+        </li>
+    </ol>
+
+
+
+    <h3 id="css">css</h3>
+
+    <ol>
+        <li>
+            <p>通过页面url是否包含debug决定是否加载压缩文件。</p>
+        </li>
+        <li>
+            <p>创建style元素。prepend插入到document.body中前面。</p>
+        </li>
+        <li>
+            <p>设置当前页面名称。</p>
+        </li>
+    </ol>
+
+
+
+    <h3 id="spa">spa</h3>
+
+    <ol>
+        <li>
+            <p>通过onhashchange绑定gotoPage回调处理，这是tmvc对spa和normal两种不同应用不同的地方。</p>
+        </li>
+        <li>
+            <p>showGotopage处理页面跳转：</p>
+
+            <ul>
+                <li>计算当前显示高度viewportHeight，显示loadingpic。</li>
+                <li>通过css模块中loadCss方法加载跳转页面相关的css文件。</li>
+                <li>如果当前是调试状态，则将页面指定的view、model、control三个js文件加载同步加载，将请求的结果拼装成一个字符串，运用eval进行执行javascript代码。</li>
+            </ul>
+        </li>
+        <li>
+            <p>对入口#main元素做以下处理：</p>
+
+            <ul>
+                <li>清空 #main元素</li>
+                <li>在#mian中插入id为pageScript的当前页面init文件</li>
+                <li>当init文件加载完成后，隐藏loadingPic。</li>
+            </ul>
+        </li>
+    </ol>
+</body>
+
+</html>
