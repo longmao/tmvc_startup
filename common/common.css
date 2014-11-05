@@ -1,0 +1,22 @@
+body {
+	margin:0;
+	padding:0;
+	overflow-x:hidden;
+}
+#main{
+	position:relative;
+	overflow:hidden;
+	z-index:1000;
+}
+.loadding {
+	position:absolute;
+	z-index:0;
+	opacity:0;
+	left:50%;
+	margin-left:-73px;
+	margin-top:-48px;
+}
+#header {
+	height:30px;
+	background-color:#333;
+}

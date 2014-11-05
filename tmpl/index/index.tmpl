@@ -1,0 +1,56 @@
+<script id="test" type="text/html">
+    <h1> <%= introduce %></h1>
+
+</script>
+
+<h2>演示1：页面跳转</h2>
+
+<a href="#about">about</a>
+
+<h2>演示2：引入子模板</h2>
+
+<#include("tmpl/index/intro")#>
+    
+<h2>演示3：获取多个同域下API接口数据</h2>
+<script id="user" type="text/html">
+    <div>current username 1: <%= task1.userName %></div>
+    <div>current username 2: <%= task2.userName %></div>
+</script>
+
+<h2>演示4：触发click event，重新渲染view。</h2>
+
+<script id="user_update" type="text/html">
+    <div>current username : <%= task1.userName %></div>
+</script>
+<button id="refresh">refresh</button>
+
+<h2>演示5 ：请求不同域下API接口数据</h2>
+<script id="CrossDomainData" type="text/html">
+    <div>CrossDomain Data 1 : <%= task1.userName %></div>
+    <div>CrossDomain Data 2 : <%= task2.userName %></div>
+
+</script>
+
+
+<h2>演示6：script中包含include子模板</h2>
+<button id="showScriptTmpl">show tmpl</button>
+<script type="text/html"  id="script-tmpl-demo">
+    <#include('tmpl/index/intro')#>
+</script>
+
+
+<h2>演示7：动态加载script文件</h2>
+<button id="loadScript">load script</button>
+
+<script type="text/html" id="script-tmpl-loadScript">
+    <%= loadScript%> has been loaded.
+</script>
+
+<h2>演示8：动态加载script中include文件。</h2>
+<button id="loadScriptTmpl">load script</button>
+
+<script type="text/html" class="script-tmpl" id="script-inline-tmpl-loadScript">
+    this template contains script-tmpl code.it will be rendered when needed
+    <#include('tmpl/index/intro')#>
+</script>
+

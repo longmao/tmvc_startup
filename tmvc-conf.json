@@ -1,0 +1,19 @@
+{
+	"appType":"spa",
+	"pageType":"html",
+    "deploy": {
+		"A":
+		{
+			"host":"172.30.10.219",
+			"port":"8888",
+			"path":"/upload.php",
+			"username": "xxxx",
+			"password": "******",
+			"serverAppPath": "/dianyi/app/aef"
+		}
+	},
+	"publish": {
+		"backHost": "http://ips.ymtech.info",
+		"frontHost": "http://feips.ymtech.info/"	
+	}
+}

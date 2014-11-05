@@ -1,0 +1,13 @@
+/*
+combined files : 
+
+*/
+
+body{
+	min-height: 1000px;
+}
+.user_name{
+	width: 400px;
+	height: 40px;
+	text-align: left;
+}

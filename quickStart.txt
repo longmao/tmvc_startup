@@ -1,0 +1,9 @@
+1. 安装deploy.exe
+2. 运行tmvc start获取配置文件
+3. 运行 npm install -g kissy-pie
+4. 配置文件中需要配置部署服务其的相关信息.
+5. 修改tmvc-conf.json 的deploy属性为服务器配置。
+6. 运行tmvc -i 初始化项目.
+7. 运行tmvc -c 页面名称(自己根据需要添加) 创建页面
+8. 运行tmvc -b 项目名称根路径/页面名称 进行前端打包
+9. 运行tmvc release -p 8000（自己可以设置）启动调试服务器。
