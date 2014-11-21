@@ -47,6 +47,8 @@ body {
 
     <p>目前版本是2.0。</p>
 
+
+
     <h2 id="why-tmvc为何使用tmvc">Why TMVC为何使用TMVC</h2>
 
     <ol>
@@ -69,10 +71,11 @@ body {
         </li>
         <li>
             <p>安装tmvc-pie</p>
+
+            <pre><code> npm install tmvcpie -g
+</code></pre>
         </li>
     </ol>
-
-    <pre class="prettyprint"><code class="language-sh hljs bash"><span class="hljs-built_in">sudo</span> npm install tmvcpie -g</code></pre>
 
     <h2 id="usage使用">Usage使用</h2>
 
@@ -80,58 +83,64 @@ body {
         <li>
             <p>获取配置文件</p>
 
-            <pre class="prettyprint"><code class="language-sh hljs sql">    tmvc  <span class="hljs-operator"><span class="hljs-keyword">start</span></span></code></pre>
+            <pre><code>tmvc  start
+</code></pre>
 
             <ul>
                 <li>
-                    <p>配置文件tmvc-conf.json如下</p>
+                    <p>当前文件夹下会生成项目的初始结构，包括生成配置文件tmvc-conf.json：</p>
 
                     <ul>
-                        <li>appTypeke可为spa、normal，分别代表单页面应用以及常规应用。
-                            <br>
-                            <pre class="prettyprint"><code class="language-javascript hljs ">    {
-    <span class="hljs-string">"appType"</span>:<span class="hljs-string">"spa"</span>,
-    <span class="hljs-string">"pageType"</span>:<span class="hljs-string">"html"</span>,
-    <span class="hljs-string">"deploy"</span>: {
-        <span class="hljs-string">"A"</span>:
-        {
-            <span class="hljs-string">"host"</span>:<span class="hljs-string">"172.30.10.219"</span>,
-            <span class="hljs-string">"port"</span>:<span class="hljs-string">"8888"</span>,
-            <span class="hljs-string">"path"</span>:<span class="hljs-string">"/upload.php"</span>,
-            <span class="hljs-string">"username"</span>: <span class="hljs-string">"xxxx"</span>,
-            <span class="hljs-string">"password"</span>: <span class="hljs-string">"******"</span>,
-            <span class="hljs-string">"serverAppPath"</span>: <span class="hljs-string">"/dianyi/app/aef"</span>
-        }
-    },
-    <span class="hljs-string">"publish"</span>: {
-        <span class="hljs-string">"backHost"</span>: <span class="hljs-string">"http://ips.ymtech.info"</span>,
-        <span class="hljs-string">"frontHost"</span>: <span class="hljs-string">"http://feips.ymtech.info/"</span>    
-    }
-}</code></pre>
+                        <li>
+                            <p>appType可为spa、normal，分别代表单页面应用以及常规应用。</p>
+
+                            <pre><code>        {
+            "appType":"spa",
+            "pageType":"html",
+            "deploy": {
+                "A":
+                {
+                    "host":"172.30.10.219",
+                    "port":"8888",
+                    "path":"/upload.php",
+                    "username": "xxxx",
+                    "password": "******",
+                    "serverAppPath": "/dianyi/app/aef"
+                }
+            },
+            "publish": {
+                "backHost": "http://ips.ymtech.info",
+                "frontHost": "http://feips.ymtech.info/"    
+            }
+</code></pre>
                         </li>
                     </ul>
                 </li>
             </ul>
         </li>
         <li>
-            <p>根据配置文件，创建tmvc初始化项目</p>
+            <p>根据配置文件tmvc-conf.json，创建tmvc初始化项目</p>
 
-            <pre class="prettyprint"><code class="language-sh hljs lasso">tmvc  <span class="hljs-attribute">-i</span> tmvc2<span class="hljs-number">.0</span></code></pre>
+            <pre><code>tmvc  -i  tmvc2.0
+</code></pre>
         </li>
         <li>
             <p>新添加新页面，如新添加home页面.</p>
 
-            <pre class="prettyprint"><code class="language-sh hljs lasso">tmvc <span class="hljs-attribute">-c</span> home</code></pre>
+            <pre><code>tmvc -c  home
+</code></pre>
         </li>
         <li>
             <p>根据 项目名称根路径/页面名称 进行前端打包</p>
 
-            <pre class="prettyprint"><code class="language-sh hljs axapta">tmvc -b tmvc/<span class="hljs-keyword">index</span></code></pre>
+            <pre><code>tmvc -b tmvc/index
+</code></pre>
         </li>
         <li>
-            <p>启动调试服务器。打开<a href="http://localhost:8000?debug">http://localhost:8000?debug</a> 测试调试开发(debug代表当前是调试状态，所有js css文件采用非压缩版本。)</p>
+            <p>启动调试服务器。打开<a href="http://longmao.github.io/tmvc_startup?debug">http://longmao.github.io/tmvc_startup?debug</a> 测试调试开发(debug代表当前是调试状态，所有js css文件采用非压缩版本。)</p>
 
-            <pre class="prettyprint"><code class="language-sh hljs vhdl">tmvc <span class="hljs-keyword">release</span> -p <span class="hljs-number">8000</span></code></pre>
+            <pre><code>tmvc release -p 8000
+</code></pre>
         </li>
     </ol>
 
@@ -143,30 +152,29 @@ body {
 
     <p>垃圾收集器，完成对之前页面存在的timer 和 通过kissy.event.on以及kissy.event.delegate 绑定的dom 事件。</p>
 
-
-
-    <pre class="prettyprint"><code class="language-javascript hljs ">    <span class="hljs-keyword">var</span> garbageCollector = {    
-        startCollect: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+    <pre><code>    var garbageCollector = {    
+        startCollect: function() {
             clearTimer();
             clearNode();
             clearObject();
             clearCss(D);
         },  
-        init: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+        init: function() {
             window.Evt = {};
             window.Evt.on = S.Event.on;
             window.Evt.delegate = S.Event.delegate;
-            S.Event.delegate = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(contextSelector, eventType, selector, func)</span> {</span>
-                <span class="hljs-keyword">var</span> elemenet = storeElementArray(selector);
+            S.Event.delegate = function(contextSelector, eventType, selector, func) {
+                var elemenet = storeElementArray(selector);
                 Evt.delegate(contextSelector, eventType, elemenet, func);
             }
-            S.Event.on = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(selector, eventType, func)</span> {</span>
-                <span class="hljs-keyword">var</span> elemenet = storeElementArray(selector); 
+            S.Event.on = function(selector, eventType, func) {
+                var elemenet = storeElementArray(selector); 
                 Evt.on(elemenet, eventType, func);
             }       
         }
 
-    }</code></pre>
+    }
+</code></pre>
 
     <h3 id="readtmpltool">readTmplTool</h3>
 
@@ -202,13 +210,12 @@ body {
                 <li>同步读取模板文件，将获取到的模板文件存在this.contentHtml</li>
                 <li>查找模板中是否存在类名为script-tmpl的元素。如果存在，则将script-tmpl元素存在this.tmplScriptEle数组中。</li>
                 <li>对this.tmplScriptEle通过replaceAll进行替换处理。将&lt;#include(‘temp.tmpl’)#&gt;片段。替换成
+                    <br>
                     <code>&lt;div class="include-tmpl" data="temp.tmpl"&gt;</code>
                 </li>
             </ul>
         </li>
     </ol>
-
-
 
     <h3 id="css">css</h3>
 
@@ -223,8 +230,6 @@ body {
             <p>设置当前页面名称。</p>
         </li>
     </ol>
-
-
 
     <h3 id="spa">spa</h3>
 
@@ -249,6 +254,23 @@ body {
                 <li>在#mian中插入id为pageScript的当前页面init文件</li>
                 <li>当init文件加载完成后，隐藏loadingPic。</li>
             </ul>
+        </li>
+    </ol>
+
+    <h2 id="目前存在的问题">目前存在的问题</h2>
+
+    <ol>
+        <li>
+            <p>hard to breakpoint debug，对于debug开发，难于断点测试，目前只能靠console or alert比较费时的debug方式</p>
+        </li>
+        <li>
+            <p>lack of test unit 缺乏测试用例</p>
+        </li>
+        <li>
+            <p>lack of some html5 support,such as History API pushstate ,缺少html5支持。</p>
+        </li>
+        <li>
+            <p>lack of mobile platform support，缺少移动端支持，需要对移动端开发进行优化。</p>
         </li>
     </ol>
 </body>

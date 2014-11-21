@@ -1,378 +1,158 @@
-TMVC2.0
-===================
+    
 
-TMVC是一个基于kissy的MVC框架，封装了针对web page开发的normal case以及针对web app开的spa两种开发模式。
+# TMVC2.0
+
+TMVC是一个基于kissy的MVC框架，封装了针对web page开发的normal case以及spa两种开发模式。
 
 目前版本是2.0。
 
+## Why TMVC为何使用TMVC
 
-Installment安装
--------------
+1.  基于成熟框架kissy，可采用kissy丰富又强大的模块，开发效率高
 
-```sh
-tmvc  -i
-```
+2.  基于自动化开发部署工具TMVCPIE，可自动生成开发starter目录，以及自动打包及部署功能，开发新页面或者模块非常方便快捷
+
+3.  框架支持模块扩展，可根据项目需求进行自主开发模块，增强项目开发的灵活性。
+
+## Installment安装
+
+ 1.  首先需要安装node
+
+ 2.  安装tmvc-pie
+
+		 
+		 npm install tmvcpie -g
+		 
+
+## Usage使用
+
+1. 获取配置文件
 
 
-Usage使用
--------------
+        tmvc  start
 
-新添加新页面，如新添加home页面.
-```sh
-tmvc -c home
-```
 
-Module模块
--------------
+      *   配置文件tmvc-conf.json如下
+	      *   appType可为spa、normal，分别代表单页面应用以及常规应用。
 
-###garbageCollector  
+                        {
+						    "appType":"spa",
+						    "pageType":"html",
+						    "deploy": {
+						        "A":
+						        {
+						            "host":"172.30.10.219",
+						            "port":"8888",
+						            "path":"/upload.php",
+						            "username": "xxxx",
+						            "password": "******",
+						            "serverAppPath": "/dianyi/app/aef"
+						        }
+						    },
+						    "publish": {
+						        "backHost": "http://ips.ymtech.info",
+						        "frontHost": "http://feips.ymtech.info/"    
+						    }
+2.  根据配置文件，创建tmvc初始化项目
+		
+		tmvc  -i  tmvc2.0
+	
+3.  新添加新页面，如新添加home页面.
+
+        tmvc <span class="hljs-attribute">-c</span> home
+        
+4.  根据 项目名称根路径/页面名称 进行前端打包
+
+        tmvc -b tmvc/index
+        
+5.  启动调试服务器。打开[http://longmao.github.io/tmvc_startup?debug](http://longmao.github.io/tmvc_startup?debug) 测试调试开发(debug代表当前是调试状态，所有js css文件采用非压缩版本。)
+
+        tmvc release -p 8000
+
+## Module模块
+
+### garbageCollector
 
 垃圾收集器，完成对之前页面存在的timer 和 通过kissy.event.on以及kissy.event.delegate 绑定的dom 事件。
-```javascript
-    var garbageCollector = {    
-        startCollect: function() {
-            clearTimer();
-            clearNode();
-            clearObject();
-            clearCss(D);
-        },  
-        init: function() {
-            window.Evt = {};
-            window.Evt.on = S.Event.on;
-            window.Evt.delegate = S.Event.delegate;
-            S.Event.delegate = function(contextSelector, eventType, selector, func) {
-                var elemenet = storeElementArray(selector);
-                Evt.delegate(contextSelector, eventType, elemenet, func);
-            }
-            S.Event.on = function(selector, eventType, func) {
-                var elemenet = storeElementArray(selector); 
-                Evt.on(elemenet, eventType, func);
-            }       
-        }
-        
-    }
-```
 
+	    var garbageCollector = {    
+	        startCollect: function() {
+	            clearTimer();
+	            clearNode();
+	            clearObject();
+	            clearCss(D);
+	        },  
+	        init: function() {
+	            window.Evt = {};
+	            window.Evt.on = S.Event.on;
+	            window.Evt.delegate = S.Event.delegate;
+	            S.Event.delegate = function(contextSelector, eventType, selector, func) {
+	                var elemenet = storeElementArray(selector);
+	                Evt.delegate(contextSelector, eventType, elemenet, func);
+	            }
+	            S.Event.on = function(selector, eventType, func) {
+	                var elemenet = storeElementArray(selector); 
+	                Evt.on(elemenet, eventType, func);
+	            }       
+	        }
+	
+	    }
+### readTmplTool
 
-###readTmplTool
+实现对模板文件的读取以及读取模板中包含include子模板
 
-实现对模板文件的读取以及模板中
+### renderEnginein
 
-###renderEngine
+1.  实现对模板中包含对class命名为sciprt-tmp的元素解析：将script-tmpl中包含的include进行替换
 
-###css
+2.  增加ajax请求某一id元素时添加遮罩。
 
-###spa
+3.  通过renderHtml进行渲染html操作：
 
+    *   首先判断html片段是否在更新，如果正在更新，则返回。
+    *   通过artTempalte提供template(id,data)方法获得html字符串。
+    *   通过D.query(selector, htmlElem)查找类名include-tmpl的元素。如果存在这样的元素。则读取元素的data属性，获取到要请求的include文件路径。执行include子模板请求，并将返回结果替换掉原模板中include片段。
+    *   如果指定id是scirpt标签，则运用D.replaceWith用新生成的htmlElm替换掉原有scriptElm，如果不是，则运用D.html更新原有elem。
+    *   判断当前id渲染是否是第一次，如果是，则执行渲染完成后的callback，并按照{id:callback}存储在TMVC.pageEvent[TMVC.getPageName()]对象中。
 
+4.  通过init完成初始化工作：
 
+    *   根据配置文件中指定的isUseMiniTmpl，决定是否获取模板的压缩文件。
+    *   同步读取模板文件，将获取到的模板文件存在this.contentHtml
+    *   查找模板中是否存在类名为script-tmpl的元素。如果存在，则将script-tmpl元素存在this.tmplScriptEle数组中。
+    *   对this.tmplScriptEle通过replaceAll进行替换处理。将<#include(‘temp.tmpl’)#>片段。替换成
+                            `<div class="include-tmpl" data="temp.tmpl">`
 
+### css
 
-常见问题
--------------
+1.  通过页面url是否包含debug决定是否加载压缩文件。
 
+2.  创建style元素。prepend插入到document.body中前面。
 
+3.  设置当前页面名称。
 
+### spa
 
+1.  通过onhashchange绑定gotoPage回调处理，这是tmvc对spa和normal两种不同应用不同的地方。
 
+2.  showGotopage处理页面跳转：
 
+    *   计算当前显示高度viewportHeight，显示loadingpic。
+    *   通过css模块中loadCss方法加载跳转页面相关的css文件。
+    *   如果当前是调试状态，则将页面指定的view、model、control三个js文件加载同步加载，将请求的结果拼装成一个字符串，运用eval进行执行javascript代码。
 
+3.  对入口#main元素做以下处理：
 
+    *   清空 #main元素
+    *   在#mian中插入id为pageScript的当前页面init文件
+    *   当init文件加载完成后，隐藏loadingPic。
 
+## 目前存在的问题
 
+1.  hard to breakpoint debug，对于debug开发，难于断点测试，目前只能靠console or alert比较费时的debug方式
 
+2.  lack of test unit 缺乏测试用例
 
+3.  lack of some html5 support,such as History API pushstate ,缺少html5支持。
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-555666666666
-Hey! I'm your first Markdown document in **StackEdit**[^stackedit]. Don't delete me, I'm very helpful! I can be recovered anyway in the **Utils** tab of the <i class="icon-cog"></i> **Settings** dialog.
-
-----------
-
-
-
-
-StackEdit stores your documents in your browser, which means all your documents are automatically saved locally and are accessible **offline!**
-
-> **Note:**
-
-> - StackEdit is accessible offline after the application has been loaded for the first time.
-> - Your local documents are not shared between different browsers or computers.
-> - Clearing your browser's data may **delete all your local documents!** Make sure your documents are synchronized with **Google Drive** or **Dropbox** (check out the [<i class="icon-refresh"></i> Synchronization](#synchronization) section).
-
-#### <i class="icon-file"></i> Create a document
-
-The document panel is accessible using the <i class="icon-folder-open"></i> button in the navigation bar. You can create a new document by clicking <i class="icon-file"></i> **New document** in the document panel.
-
-###Switch to another document
-
-All your local documents are listed in the document panel. You can switch from one to another by clicking a document in the list or you can toggle documents using <kbd>Ctrl+[</kbd> and <kbd>Ctrl+]</kbd>.
-
-#### <i class="icon-pencil"></i> Rename a document
-
-You can rename the current document by clicking the document title in the navigation bar.
-
-#### <i class="icon-trash"></i> Delete a document
-
-You can delete the current document by clicking <i class="icon-trash"></i> **Delete document** in the document panel.
-
-#### <i class="icon-hdd"></i> Export a document
-
-You can save the current document to a file by clicking <i class="icon-hdd"></i> **Export to disk** from the <i class="icon-provider-stackedit"></i> menu panel.
-
-> **Tip:** Check out the [<i class="icon-upload"></i> Publish a document](#publish-a-document) section for a description of the different output formats.
-
-
-----------
-
-
-Synchronization
--------------------
-
-StackEdit can be combined with <i class="icon-provider-gdrive"></i> **Google Drive** and <i class="icon-provider-dropbox"></i> **Dropbox** to have your documents saved in the *Cloud*. The synchronization mechanism takes care of uploading your modifications or downloading the latest version of your documents.
-
-> **Note:**
-
-> - Full access to **Google Drive** or **Dropbox** is required to be able to import any document in StackEdit. Permission restrictions can be configured in the settings.
-> - Imported documents are downloaded in your browser and are not transmitted to a server.
-> - If you experience problems saving your documents on Google Drive, check and optionally disable browser extensions, such as Disconnect.
-
-#### <i class="icon-refresh"></i> Open a document
-
-You can open a document from <i class="icon-provider-gdrive"></i> **Google Drive** or the <i class="icon-provider-dropbox"></i> **Dropbox** by opening the <i class="icon-refresh"></i> **Synchronize** sub-menu and by clicking **Open from...**. Once opened, any modification in your document will be automatically synchronized with the file in your **Google Drive** / **Dropbox** account.
-
-#### <i class="icon-refresh"></i> Save a document
-
-You can save any document by opening the <i class="icon-refresh"></i> **Synchronize** sub-menu and by clicking **Save on...**. Even if your document is already synchronized with **Google Drive** or **Dropbox**, you can export it to a another location. StackEdit can synchronize one document with multiple locations and accounts.
-
-#### <i class="icon-refresh"></i> Synchronize a document
-
-Once your document is linked to a <i class="icon-provider-gdrive"></i> **Google Drive** or a <i class="icon-provider-dropbox"></i> **Dropbox** file, StackEdit will periodically (every 3 minutes) synchronize it by downloading/uploading any modification. A merge will be performed if necessary and conflicts will be detected.
-
-If you just have modified your document and you want to force the synchronization, click the <i class="icon-refresh"></i> button in the navigation bar.
-
-> **Note:** The <i class="icon-refresh"></i> button is disabled when you have no document to synchronize.
-
-#### <i class="icon-refresh"></i> Manage document synchronization
-
-Since one document can be synchronized with multiple locations, you can list and manage synchronized locations by clicking <i class="icon-refresh"></i> **Manage synchronization** in the <i class="icon-refresh"></i> **Synchronize** sub-menu. This will let you remove synchronization locations that are associated to your document.
-
-> **Note:** If you delete the file from **Google Drive** or from **Dropbox**, the document will no longer be synchronized with that location.
-
-----------
-
-
-Publication
--------------
-
-Once you are happy with your document, you can publish it on different websites directly from StackEdit. As for now, StackEdit can publish on **Blogger**, **Dropbox**, **Gist**, **GitHub**, **Google Drive**, **Tumblr**, **WordPress** and on any SSH server.
-
-#### <i class="icon-upload"></i> Publish a document
-
-You can publish your document by opening the <i class="icon-upload"></i> **Publish** sub-menu and by choosing a website. In the dialog box, you can choose the publication format:
-
-- Markdown, to publish the Markdown text on a website that can interpret it (**GitHub** for instance),
-- HTML, to publish the document converted into HTML (on a blog for example),
-- Template, to have a full control of the output.
-
-> **Note:** The default template is a simple webpage wrapping your document in HTML format. You can customize it in the **Advanced** tab of the <i class="icon-cog"></i> **Settings** dialog.
-
-#### <i class="icon-upload"></i> Update a publication
-
-After publishing, StackEdit will keep your document linked to that publication which makes it easy for you to update it. Once you have modified your document and you want to update your publication, click on the <i class="icon-upload"></i> button in the navigation bar.
-
-> **Note:** The <i class="icon-upload"></i> button is disabled when your document has not been published yet.
-
-#### <i class="icon-upload"></i> Manage document publication
-
-Since one document can be published on multiple locations, you can list and manage publish locations by clicking <i class="icon-upload"></i> **Manage publication** in the <i class="icon-provider-stackedit"></i> menu panel. This will let you remove publication locations that are associated to your document.
-
-> **Note:** If the file has been removed from the website or the blog, the document will no longer be published on that location.
-
-----------
-
-
-Markdown Extra
---------------------
-
-StackEdit supports **Markdown Extra**, which extends **Markdown** syntax with some nice features.
-
-> **Tip:** You can disable any **Markdown Extra** feature in the **Extensions** tab of the <i class="icon-cog"></i> **Settings** dialog.
-
-> **Note:** You can find more information about **Markdown** syntax [here][2] and **Markdown Extra** extension [here][3].
-
-
-### Tables
-
-**Markdown Extra** has a special syntax for tables:
-
-Item     | Value
--------- | ---
-Computer | $1600
-Phone    | $12
-Pipe     | $1
-
-You can specify column alignment with one or two colons:
-
-| Item     | Value | Qty   |
-| :------- | ----: | :---: |
-| Computer | $1600 |  5    |
-| Phone    | $12   |  12   |
-| Pipe     | $1    |  234  |
-
-
-### Definition Lists
-
-**Markdown Extra** has a special syntax for definition lists too:
-
-Term 1
-Term 2
-:   Definition A
-:   Definition B
-
-Term 3
-
-:   Definition C
-
-:   Definition D
-
-	> part of definition D
-
-
-### Fenced code blocks
-
-GitHub's fenced code blocks are also supported with **Highlight.js** syntax highlighting:
-
-```
-// Foo
-var bar = 0;
-```
-
-> **Tip:** To use **Prettify** instead of **Highlight.js**, just configure the **Markdown Extra** extension in the <i class="icon-cog"></i> **Settings** dialog.
-
-> **Note:** You can find more information:
-
-> - about **Prettify** syntax highlighting [here][5],
-> - about **Highlight.js** syntax highlighting [here][6].
-
-
-### Footnotes
-
-You can create footnotes like this[^footnote].
-
-  [^footnote]: Here is the *text* of the **footnote**.
-
-
-### SmartyPants
-
-SmartyPants converts ASCII punctuation characters into "smart" typographic punctuation HTML entities. For example:
-
-|                  | ASCII                        | HTML              |
- ----------------- | ---------------------------- | ------------------
-| Single backticks | `'Isn't this fun?'`            | 'Isn't this fun?' |
-| Quotes           | `"Isn't this fun?"`            | "Isn't this fun?" |
-| Dashes           | `-- is en-dash, --- is em-dash` | -- is en-dash, --- is em-dash |
-
-
-### Table of contents
-
-You can insert a table of contents using the marker `[TOC]`:
-
-[TOC]
-
-
-### MathJax
-
-You can render *LaTeX* mathematical expressions using **MathJax**, as on [math.stackexchange.com][1]:
-
-The *Gamma function* satisfying $\Gamma(n) = (n-1)!\quad\forall n\in\mathbb N$ is via the Euler integral
-
-$$
-\Gamma(z) = \int_0^\infty t^{z-1}e^{-t}dt\,.
-$$
-
-> **Tip:** To make sure mathematical expressions are rendered properly on your website, include **MathJax** into your template:
-
-```
-<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML"></script>
-```
-
-> **Note:** You can find more information about **LaTeX** mathematical expressions [here][4].
-
-
-### UML diagrams
-
-You can also render sequence diagrams like this:
-
-```sequence
-Alice->Bob: Hello Bob, how are you?
-Note right of Bob: Bob thinks
-Bob-->Alice: I am good thanks!
-```
-
-And flow charts like this:
-
-```flow
-st=>start: Start
-e=>end
-op=>operation: My Operation
-cond=>condition: Yes or No?
-
-st->op->cond
-cond(yes)->e
-cond(no)->op
-```
-
-> **Note:** You can find more information:
-
-> - about **Sequence diagrams** syntax [here][7],
-> - about **Flow charts** syntax [here][8].
-
-### Support StackEdit
-
-[![](https://cdn.monetizejs.com/resources/button-32.png)](https://monetizejs.com/authorize?client_id=ESTHdCYOi18iLhhO&summary=true)
-
-  [^stackedit]: [StackEdit](https://stackedit.io/) is a full-featured, open-source Markdown editor based on PageDown, the Markdown library used by Stack Overflow and the other Stack Exchange sites.
-
-
-  [1]: http://math.stackexchange.com/
-  [2]: http://daringfireball.net/projects/markdown/syntax "Markdown"
-  [3]: https://github.com/jmcmanus/pagedown-extra "Pagedown Extra"
-  [4]: http://meta.math.stackexchange.com/questions/5020/mathjax-basic-tutorial-and-quick-reference
-  [5]: https://code.google.com/p/google-code-prettify/
-  [6]: http://highlightjs.org/
-  [7]: http://bramp.github.io/js-sequence-diagrams/
-  [8]: http://adrai.github.io/flowchart.js/
-
+4.  lack of mobile platform support，缺少移动端支持，需要对移动端开发进行优化。
